@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    canvas {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="c" width="800" height="480"></canvas>
+  <script>
+    let c = document.getElementById("c"), g = c.getContext("2d"), w = c.width, h = c.height, i = g.createImageData(w, h), t = 0, a = new (window.AudioContext || window.webkitAudioContext), o = a.createOscillator(), n = a.createGain(); o.type = "triangle", o.frequency.value = 440, o.connect(n), n.connect(a.destination), n.gain.value = .1; const d = (t, e) => Math.sqrt((t - w / 2) ** 2 + (e - h / 2) ** 2), p = (t, e, a) => (384 + [t, e, d(t, e)].reduce((t, e) => t + 128 * Math.sin(e / 16 + a), 0)) / 3, r = () => { let e = 0;[...Array(h)].forEach((a, n) => [...Array(w)].forEach((a, c) => { let r = 4 * (c + n * w), o = p(c, n, t); i.data[r] = o * Math.sin(t) * 2 + 128, i.data[r + 1] = o * Math.sin(t + 2) * 2 + 128, i.data[r + 2] = o * Math.sin(t + 4) * 2 + 128, i.data[r + 3] = 255, e += o })), g.putImageData(i, 0, 0), o.frequency.setValueAtTime(100 + e / (w * h), a.currentTime), t += .02, requestAnimationFrame(r) }; c.addEventListener("click", function () { "suspended" === a.state && a.resume().then(() => { o.start() }) }), r();
+  </script>
+</body>
+
+</html>
